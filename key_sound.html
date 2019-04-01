@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>按鍵&聲音配合JS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="style.css">
+</head>
+<body>
+    <div>
+        <p>請按以下按鍵搭配W、S、A、D</p>
+    </div>
+    <div id="veiwimg" style="height: 50vh; width: 100%">
+        <div id="moveimg" style="width:200px;">
+            <img src=moveimg.png width="100%";>
+        </div>
+    </div>
+    <div class="keys" >
+        <div data-key="87" class="key" onload="moveimg(this.vale)">
+            <kbd>W<kbd>
+            <span class="sound">up</span>
+        </div>
+            <div data-key="83" class="key" onload="moveimg(this.vale)">
+                <kbd>S<kbd>
+                <span class="sound">down</span>
+            </div>
+            <div data-key="65" class="key" onload="moveimg(this.vale)">
+                <kbd>A<kbd>
+                <span class="sound">left</span>
+            </div>
+  
+            <div data-key="68" class="key" onload="moveimg(this.vale)">
+                <kbd>D<kbd>
+                <span class="sound">right</span>
+            </div>
+    </div>
+    <audio data-key="87" src="sounds/takeme.wav"></audio>
+    <audio data-key="83" src="sounds/diver.wav"></audio>
+    <audio data-key="65" src="sounds/shit.wav"></audio>
+    <audio data-key="68" src="sounds/car.wav"></audio>
+
+    <script>
+        function moveimg(){
+            var moveimg = document.getElementById("moveimg");
+            var left= document.defaultView.getComputedStyle(moveimg,null).getPropertyValue('left');//使用此方法取值
+            var left =parseInt(left);
+            var top= document.defaultView.getComputedStyle(moveimg,null).getPropertyValue('top');//使用此方法取值
+            var top =parseInt(top);
+            if (event.keyCode==68) {
+                moveimg.style.left=(left+50)+"px";
+                console.log(left);
+            }
+            else if(event.keyCode==65){
+                moveimg.style.left=(left-50)+"px";
+                console.log(left);
+            }
+            else if(event.keyCode==87){
+                moveimg.style.top=(top-50)+"px";
+                console.log(top);
+            }
+            else if(event.keyCode==83){
+                moveimg.style.top=(top+50)+"px";
+                console.log(top);
+            }
+
+            
+            
+            // window.addEventListener('keydown',moveimg);
+        }
+        function removeTransition(e){
+            if(e.propertyName !=='transform' ) return;
+            e.target.classList.remove('playing');
+        }
+        function playSound(e)
+        {
+            const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
+            const key = document.querySelector(`div[data-key="${e.keyCode}"]`);
+            
+            if(!audio) return;
+            
+            key.classList.add('playing');//加入playing class
+            audio.currentTime= 0;//時間從0開始撥放
+            audio.play();
+             
+        }
+        const keys = Array.from(document.querySelectorAll('.key'));
+        keys.forEach(key => key.addEventListener('transitionend' , removeTransition));//transitionend完成removeTransition後觸發
+        window.addEventListener('keydown',playSound);
+        document.onkeydown=moveimg;
+       
+    </script>
+</body>
+</html>
